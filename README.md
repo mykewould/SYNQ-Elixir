@@ -9,18 +9,18 @@ Welcome to the Elixir SDK for the [Synq API](docs.synq.fm).  This is an implemen
 Add SynqElixir to your list of dependencies in `mix.exs`:
 
         def deps do
-          [{:synq-elixir, github: "SYNQfm/SYNQ-Elixir"}]
+          [{:synq_elixir, github: "SYNQfm/SYNQ-Elixir"}]
         end
 
 Or from hex:
 
         def deps do
-          [{:synq-elixir, "~> 0.0.1"}]
+          [{:synq_elixir, "~> 0.0.1"}]
         end
 
-Ensure you list `SynqElixir` in application dependency in your mix.exs file.
+Ensure you list `synq_elixir` in application dependency in your mix.exs file.
 
-        [applications: [:SynqElixir]]
+        [applications: [:synq_elixir]]
 
 ## Usage
 
