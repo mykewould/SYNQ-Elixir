@@ -1,4 +1,8 @@
-> Elixir client for Synq API
+[![CircleCI](https://circleci.com/gh/SYNQfm/SYNQ-Elixir.svg?style=svg)](https://circleci.com/gh/SYNQfm/SYNQ-Elixir)
+
+# Elixir SDK for Synq API
+
+Welcome to the Elixir SDK for the [Synq API](docs.synq.fm).  This is an implementation of the API [specification](https://docs.synq.fm/api/#!/video/create)
 
 ## Installation
 
