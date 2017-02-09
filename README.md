@@ -48,4 +48,4 @@ SynqElixir.Api.upload(video_id, file)
 
 ### Overriding Environment
 
-You can override the default environment by exporting the environment variable `SYNQ_ENV` which can be set one of `dev`, `stage` or `prod`. This takes precedence over the `Mix.env`.
+By default, we'll use the `prod` environment. You can override the default environment by exporting the environment variable `SYNQ_ENV` which can be set `stage` or `prod`
