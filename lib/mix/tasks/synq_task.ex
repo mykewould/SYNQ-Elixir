@@ -39,13 +39,12 @@ defmodule Mix.Tasks.SynqTask do
   def process(%{command: "create"} = opts) do
     metadata = opts[:metadata] || %{}
     log("creating video")
-    video = Api.create(metadata)
-    case video do
+    case Api.create(metadata) do
       {:error, %{"name" => "missing_parameter", "message" => msg, "details" => %{"missing" => key}} = details, status} ->
         log("error creating the video : #{status}, missing param '#{key}'")
       {:error, %{"name" => "missing_parameter"} = details, status} ->
         log("error creating the video : #{status}, #{inspect details}")
-      _ ->
+      {:ok, video} ->
         log("created video #{video.video_id}")
     end
   end

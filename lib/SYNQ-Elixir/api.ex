@@ -11,7 +11,7 @@ defmodule SynqElixir.Api do
   alias __MODULE__
 
   @user_agent [{"User-agent", "SynqElixir"}]
-  @content_type [{"Content-Type", "application/json"}]
+  @content_type [{"Content-Type", "application/x-www-form-urlencoded"}]
 
   @doc """
   Creating URL based on url from config and resources paths
@@ -27,15 +27,16 @@ defmodule SynqElixir.Api do
   @spec create(map) :: SynqElixir.response
   def create(metadata \\ %{}) do
     key = System.get_env("SYNQ_API_KEY")
-    data = %{api_key: key}
+    data = %{"api_key" => key}
     data = if map_size(metadata) > 0 do
-      Map.put_new(data, :metadata, metadata)
+      Map.put_new(data, "userdata",  Poison.encode!(metadata))
     else
       data
     end
+    body = URI.encode_query(data)
     :create
     |> build_url
-    |> Api.post(data |> Poison.encode!)
+    |> Api.post(body, request_headers)
     |> Parser.parse(Video)
   end
 
@@ -48,7 +49,7 @@ defmodule SynqElixir.Api do
     data = %{api_key: key, video_id: video_id}
     :details
     |> build_url
-    |> Api.post(data |> Poison.encode!)
+    |> Api.post(data |> URI.encode_query)
     |> Parser.parse(Video)
   end
 
@@ -97,4 +98,7 @@ defmodule SynqElixir.Api do
   def url(:prod), do: "https://api.synq.fm"
   def url(env) when not is_nil(env) and is_bitstring(env), do: url(String.to_atom(env))
   def url(_), do: url(:stage)
+
+  def request_headers, do: @content_type ++ @user_agent
+
 end
