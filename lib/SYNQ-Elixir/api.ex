@@ -24,33 +24,36 @@ defmodule SynqElixir.Api do
   @doc """
   Create a video
   """
-  @spec create(map) :: SynqElixir.response
-  def create(metadata \\ %{}) do
-    key = System.get_env("SYNQ_API_KEY")
-    data = %{"api_key" => key}
-    data = if map_size(metadata) > 0 do
-      Map.put_new(data, "userdata",  Poison.encode!(metadata))
-    else
-      data
-    end
-    body = URI.encode_query(data)
-    :create
-    |> build_url
-    |> Api.post(body, request_headers)
-    |> Parser.parse(Video)
+  @spec create(map) :: SynqElixir.Resources.Video
+  def create(metadata) when map_size(metadata) > 0 do
+    data = %{"userdata" => Poison.encode!(metadata)}
+    synq_post(:create, data)
   end
+  def create(_), do: synq_post(:create, %{})
 
   @doc """
   Get details about a video
   """
-  @spec details(bitstring) :: SynqElixir.response
+  @spec details(bitstring) :: SynqElixir.Resources.Video
   def details(video_id) do
+    data = %{"video_id" => video_id}
+    synq_post(:details, data)
+  end
+
+  @doc """
+  Convenience call that will get the env variable, convert the map to a body
+  set the headers and parse the output
+  """
+  @spec synq_post(bitstring, map) :: SynqElixir.Resources.Video
+  def synq_post(action, data_map) do
     key = System.get_env("SYNQ_API_KEY")
-    data = %{api_key: key, video_id: video_id}
-    :details
-    |> build_url
-    |> Api.post(data |> URI.encode_query)
-    |> Parser.parse(Video)
+    body = data_map
+     |> Map.put_new("api_key", key)
+     |> URI.encode_query
+    action
+     |> build_url
+     |> Api.post(body, request_headers)
+     |> Parser.parse(Video)
   end
 
   @doc """
