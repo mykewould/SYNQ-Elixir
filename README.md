@@ -31,15 +31,22 @@ You can also run convenience tasks that will help you testing creating of videos
 ```
 # create a video object
 mix synq_task -c create
+
+# get details for video 123
+mix synq_task -c details -v 123
+
 ```
 
 ### Examples
 
 ```elixir
+# Create video
 SynqElixir.Api.create()
 
+# Create video with custom metadata
 SynqElixir.Api.create(%{foo: "bar"})
 
+# Get video details for video '123'
 SynqElixir.Api.details("123")
 
 SynqElixir.Api.upload(video_id, file)
