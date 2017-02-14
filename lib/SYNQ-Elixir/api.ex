@@ -77,13 +77,7 @@ defmodule SynqElixir.Api do
     -F file="@my_video_file.mp4"
   """
   @spec upload(bitstring, bitstring) :: SynqElixir.response
-  def upload(video_id, file) do
-    key = System.get_env("API_KEY")
-    post_data = Poison.encode!(%{api_key: key, video_id: video_id})
-    :upload
-    |> build_url
-    |> Api.post(post_data)
-    |> Parser.parse(Video)
+  def upload(_video_id, _file) do
   end
 
   @doc """
