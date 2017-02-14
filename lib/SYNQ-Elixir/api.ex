@@ -1,8 +1,6 @@
 defmodule SynqElixir.Api do
   @moduledoc """
   API interface to communicate with Synq.fm API
-
-  Todo: refactor code so that we can move auth part to single place
   """
 
   use HTTPoison.Base
@@ -100,7 +98,7 @@ defmodule SynqElixir.Api do
   def url(:stage), do: "https://api-staging.synq.fm"
   def url(:prod), do: "https://api.synq.fm"
   def url(env) when not is_nil(env) and is_bitstring(env), do: url(String.to_atom(env))
-  def url(_), do: url(:stage)
+  def url(_), do: url(:prod)
 
   def request_headers, do: @content_type ++ @user_agent
 
