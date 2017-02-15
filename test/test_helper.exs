@@ -14,7 +14,7 @@ defmodule SynqElixir.TestHelpers do
 
   def mock(:get, response, func), do: mock([get: fn(_url, _headers) -> response end], func)
   def mock(:post, response, func), do: mock([post: fn(_url, _params, _headers) -> response end], func)
-  def mock(:post_data, response, data, func), do: mock([post: fn(_url, params, _headers) -> if data === params, do: response, else: (raise "Params do not match ('#{data}' vs '#{params}')") end], func)
+  def mock(:post_data, response, data, func), do: mock([post: fn(_url, params, _headers) -> if data === params, do: response, else: (raise "Params do not match ('#{inspect data}' vs '#{inspect params}')") end], func)
   def mock(:put, response, func), do: mock([put: fn(_url, _params, _headers) -> response end], func)
   def mock(:delete, response, func), do: mock([delete: fn(_url, _headers) -> response end], func)
   def mock(funcl, func) do

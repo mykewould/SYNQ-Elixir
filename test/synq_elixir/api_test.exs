@@ -13,7 +13,7 @@ defmodule SynqElixirApiTest do
 
   test "create should handle request correctly" do
     response = fake_response(%{video_id: 10}, 201)
-    params = URI.encode_query(%{"api_key" => "abc"})
+    params = {:form, [{"api_key", "abc"}]}
     mock :post_data, response, params, fn ->
       assert {:ok, %SynqElixir.Resources.Video{video_id: 10}} === Api.create(%{})
     end
@@ -22,34 +22,27 @@ defmodule SynqElixirApiTest do
   test "create with user data works correctly" do
     user_data = %{foo: "bar"}
     response = fake_response(%{video_id: 1, state: "uploaded"}, 200)
-    params = URI.encode_query(%{"api_key" => "abc", "userdata" => Poison.encode!(user_data)})
+    data = %{"api_key" => "abc", "userdata" => Poison.encode!(user_data)}
+    params = {:form, Map.to_list(data)}
     mock :post_data, response, params, fn ->
       assert {:ok, %SynqElixir.Resources.Video{video_id: 1, state: "uploaded"}} === Api.create(user_data)
     end
   end
 
-  # test "details should return the resources that exist" do
-  #   response = fake_response([%{video_id: 1, state: "uploaded"}, %{video_id: 2, state: "created"}], 200)
-  #   mock :get, response, fn ->
-  #     assert {:ok, [%SynqElixir.Resources.Video{video_id: 1, state: "uploaded"}, %SynqElixir.Resources.Video{video_id: 2, state: "created"}]} === Api.find(SynqElixir.Resources.Video)
-  #   end
+  test "synq_post should handle upload correctly" do
+    response = fake_response(%{"key" => "abc"}, 200)
+    data = %{"video_id" => "123"}
+    params = {:form, Map.to_list(%{"api_key" => "abc", "video_id" => "123"})}
+    mock :post_data, response, params, fn ->
+      assert {:ok, %{"key" => "abc"}} === Api.synq_post(:upload, data)
+    end
+  end
 
-  #   response = fake_response(%{errors: %{"detail" => "unauthorized"}}, 401)
-  #   mock :get, response, fn ->
-  #     assert {:error, %{"detail" => "unauthorized"}, 401} === Api.find(SynqElixir.Resources.Video)
-  #   end
-  # end
-
-  # test "get_video works correctly" do
-  #   response = fake_response(%{id: 1, name: "XYZ"}, 200)
-  #   mock :get, response, fn ->
-  #     assert {:ok, %SynqElixir.Resources.Video{id: 1, name: "XYZ"}} === Api.get_video(1)
-  #   end
-  # end
-
-  test "process_url/1 creates correct url path" do
-    System.put_env("SYNQ_ENV", "stage")
-    assert Api.process_url("/awesome") === "#{Api.url(:stage)}/awesome"
+  test "details should return the resources that exist" do
+    response = fake_response(%{video_id: 1, state: "created"}, 200)
+    mock :post, response, fn ->
+      assert {:ok, %SynqElixir.Resources.Video{video_id: 1, state: "created"}} === Api.details(1)
+    end
   end
 
   test "url returns appropriate url" do

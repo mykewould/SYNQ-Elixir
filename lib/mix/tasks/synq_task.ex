@@ -36,21 +36,11 @@ defmodule Mix.Tasks.SynqTask do
     log("took #{display_time(taken)}")
   end
 
-  def handle_resp(resp, label) do
-    case resp do
-      {:error, %{"name" => "missing_parameter", "message" => msg, "details" => %{"missing" => key}} = details, status} ->
-        {:error, "error #{label} : #{status}, missing param '#{key}'"}
-      {:error, %{"name" => "missing_parameter"} = details, status} ->
-        {:error, "error #{label} : #{status}, #{inspect details}"}
-      {:ok, video} -> resp
-    end
-  end
-
   def process(%{command: "create"} = opts) do
     metadata = opts[:metadata] || %{}
     log("creating video")
     resp = Api.create(metadata)
-    case handle_resp(resp, "creating the video") do
+    case Api.handle_resp(resp, "creating the video") do
       {:error, msg} -> log(msg)
       {:ok, video} -> log("created video #{video.video_id}")
     end
@@ -58,9 +48,23 @@ defmodule Mix.Tasks.SynqTask do
 
   def process(%{command: cmd, video_id: vid} = opts) when cmd in ["details", "detail"] do
     resp = Api.details(vid)
-    case handle_resp(resp, "getting video details") do
+    case Api.handle_resp(resp, "getting video details") do
       {:error, msg} -> log(msg)
       {:ok, video} -> log("video detail #{inspect video}")
+    end
+  end
+
+  def process(%{command: "upload", file: file, video_id: vid} = opts) do
+    unless File.exists?(file) do
+      log("File '#{file}' does not exist")
+      exit(1)
+    end
+    log("uploading video file '#{file}' for #{vid}")
+    resp = Api.upload(vid, file)
+    case Api.handle_resp(resp, "uploading video") do
+      {:error, msg} -> log(msg)
+      {:ok, %{:location => loc}} -> log("uploaded video to #{loc}")
+      _ -> log("unknown resp #{inspect resp}")
     end
   end
 

@@ -7,7 +7,8 @@ defmodule SynqElixir.Parser do
   @type response :: {:ok, [struct]} | {:ok, struct} | :ok | {:error, map, status_code} | {:error, map} | any
 
   @spec parse(tuple, any) :: SynqElixir.response
-  def parse(response, module) do
+  def parse(response, nil), do: parse(response)
+  def parse(response, module) when not is_nil(module) do
     case response do
       {:ok, %HTTPoison.Response{body: body, headers: _, status_code: status}} when status in [200, 201] ->
         decoded_body =
@@ -20,14 +21,22 @@ defmodule SynqElixir.Parser do
               |> Poison.decode!(as: module)
           end
         {:ok, decoded_body}
+      _ -> parse(response, nil)
+    end
+  end
 
+  @spec parse(tuple) :: SynqElixir.response
+  def parse(response) do
+    case response do
+      {:ok, %HTTPoison.Response{body: body, headers: _, status_code: status}} when status in [200, 201] ->
+        Poison.decode(body)
+      {:ok, %HTTPoison.Response{body: _, headers: headers, status_code: 204}} when length(headers) > 0 ->
+        {:ok, Enum.into(headers, %{})}
       {:ok, %HTTPoison.Response{body: _, headers: _, status_code: 204}} ->
-        :ok
-
+        {:ok, %{}}
       {:ok, %HTTPoison.Response{body: body, headers: _, status_code: status}} ->
         {:ok, json} = Poison.decode(body)
         {:error, json, status}
-
       {:error, %HTTPoison.Error{id: _, reason: reason}} ->
         {:error, %{reason: reason}}
       _ ->
