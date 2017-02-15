@@ -1,8 +1,9 @@
 [![CircleCI](https://circleci.com/gh/SYNQfm/SYNQ-Elixir.svg?style=svg)](https://circleci.com/gh/SYNQfm/SYNQ-Elixir)
+[![Hex.pm](https://img.shields.io/badge/hex-0.0.1-orange.svg)](https://hex.pm/packages/synq_elixir)
 
 # Elixir SDK for Synq API
 
-Welcome to the Elixir SDK for the [Synq API](docs.synq.fm).  This is an implementation of the API [specification](https://docs.synq.fm/api/#!/video/create)
+Welcome to the Elixir SDK for the [Synq API](docs.synq.fm).  This is an implementation of the API [specification](https://docs.synq.fm/api/#!/video/create).  You can view the Elixir API reference [here](https://hexdocs.pm/synq_elixir/api-reference.html)
 
 ## Installation
 
@@ -35,6 +36,8 @@ mix synq_task -c create
 # get details for video 123
 mix synq_task -c details -v 123
 
+# upload file to video object
+mix synq_task -c upload -v 123 -f myfile.mp4
 ```
 
 ### Examples
@@ -49,8 +52,8 @@ SynqElixir.Api.create(%{foo: "bar"})
 # Get video details for video '123'
 SynqElixir.Api.details("123")
 
-SynqElixir.Api.upload(video_id, file)
-
+# upload video file to the video object
+SynqElixir.Api.upload("123", "~/Downloads/myvideofile.mp4")
 ```
 
 ### Overriding Environment
