@@ -30,13 +30,13 @@ Ensure you list `synq_elixir` in application dependency in your mix.exs file.
 {:ok, video} = SynqElixir.Api.create()
 
 # Create video with video file
-{:ok, {video, upload_headers}} = SynqElixir.Api.create("myvideo.mp4")
+{:ok, {video, upload_headers}} = SynqElixir.Api.create("~/Downloads/myvideo.mp4")
 
 # Create video with custom metadata
 {:ok, video} = SynqElixir.Api.create(%{foo: "bar"})
 
 # Create video with video file and metadata
-{:ok, {video, upload_headers}} = SynqElixir.Api.create("myvideo.mp4", %{foo: "bar"})
+{:ok, {video, upload_headers}} = SynqElixir.Api.create("~/Downloads/myvideo.mp4", %{foo: "bar"})
 
 # Get video details for video 'video123'
 {:ok, video} = SynqElixir.Api.details("video123")
@@ -92,7 +92,7 @@ You can also run convenience tasks that will help you testing creating of videos
 
 ```
 # create and upload video
-mix synq_task -c create -f myvideo.mp4
+mix synq_task -c create -f ~/Downloads/myvideo.mp4
 
 # create a video object
 mix synq_task -c create
@@ -101,7 +101,7 @@ mix synq_task -c create
 mix synq_task -c details -v 123
 
 # upload file to video object
-mix synq_task -c upload -v 123 -f myvideo.mp4
+mix synq_task -c upload -v 123 -f ~/Downloads/myvideo.mp4
 ```
 
 ### Overriding Environment
