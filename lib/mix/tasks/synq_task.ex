@@ -36,6 +36,16 @@ defmodule Mix.Tasks.SynqTask do
     log("took #{display_time(taken)}")
   end
 
+  def process(%{command: "create", file: file} = opts) do
+    metadata = opts[:metadata] || %{}
+    log("creating video with file '#{file}'")
+    resp = Api.create(file, metadata)
+    case Api.handle_resp(resp, "create and upload") do
+      {:error, msg} -> log(msg)
+      {:ok, {video, %{"Location" => loc}}} -> log("created video #{video.video_id}, uploaded to #{loc}")
+    end
+  end
+
   def process(%{command: "create"} = opts) do
     metadata = opts[:metadata] || %{}
     log("creating video")
@@ -63,7 +73,7 @@ defmodule Mix.Tasks.SynqTask do
     resp = Api.upload(vid, file)
     case Api.handle_resp(resp, "uploading video") do
       {:error, msg} -> log(msg)
-      {:ok, %{:location => loc}} -> log("uploaded video to #{loc}")
+      {:ok, %{"Location" => loc}} -> log("uploaded video to #{loc}")
       _ -> log("unknown resp #{inspect resp}")
     end
   end

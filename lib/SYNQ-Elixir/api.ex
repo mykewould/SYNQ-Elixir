@@ -38,6 +38,16 @@ defmodule SynqElixir.Api do
   @doc """
   Create a video
   """
+  @spec create(map) :: tuple
+  def create(file) when is_bitstring(file), do: create(file, %{})
+
+  @spec create(map) :: tuple
+  def create(file, metadata) when is_bitstring(file) and is_map(metadata) do
+    {:ok, video} = create(metadata)
+    {:ok, resp} = upload(video.video_id, file)
+    {:ok, {video, resp}}
+  end
+
   @spec create(map) :: SynqElixir.Resources.Video
   def create(metadata) when map_size(metadata) > 0 do
     data = %{"userdata" => Poison.encode!(metadata)}
