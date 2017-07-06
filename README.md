@@ -7,22 +7,28 @@ Welcome to the Elixir SDK for the [Synq API](docs.synq.fm).  This is an implemen
 
 ## Installation
 
+SYNQ requires an API key for HTTP requests. Set the following env variable:
+```
+  SYNQ_API_KEY:your_api_key
+```
+
+
 Add SynqElixir to your list of dependencies in `mix.exs`:
-
-        def deps do
-          [{:synq_elixir, github: "SYNQfm/SYNQ-Elixir"}]
-        end
-
+```elixir
+  def deps do
+    [{:synq_elixir, github: "SYNQfm/SYNQ-Elixir"}]
+  end
+```
 Or from hex:
-
-        def deps do
-          [{:synq_elixir, "~> 0.0.1"}]
-        end
-
+```elixir
+  def deps do
+    [{:synq_elixir, "~> 0.0.1"}]
+  end
+```
 Ensure you list `synq_elixir` in application dependency in your mix.exs file.
-
-        [applications: [:synq_elixir]]
-
+```elixir
+  [applications: [:synq_elixir]]
+```
 ### Examples
 
 ```elixir
@@ -47,15 +53,15 @@ Ensure you list `synq_elixir` in application dependency in your mix.exs file.
 
 Video object looks like this
 
-```
+```elixir
 %SynqElixir.Resources.Video{
   created_at: "2017-02-15T03:01:16.767Z",
-  updated_at: "2017-02-15T03:06:31.794Z", 
-  userdata: %{}, 
+  updated_at: "2017-02-15T03:06:31.794Z",
+  userdata: %{},
   player: %{
-    "embed_url" => "https://player.synq.fm/embed/video123", 
+    "embed_url" => "https://player.synq.fm/embed/video123",
     "thumbnail_url" => "https://multicdn.synq.fm/projects/0a/bf/0abfe1b849154082993f2fce77a16fd9/derivatives/thumbnails/45/d4/video123/0000360.jpg",
-    "views" => 0}, 
+    "views" => 0},
   state: "uploaded",
   video_id: "video123",
   outputs: %{
@@ -74,7 +80,7 @@ Video object looks like this
 
 Upload Headers look like this
 
-```
+```elixir
 %{"x-amz-id-2" => "amz",
   "x-amz-request-id" => "122E97DAFA36213A",
   "Date" => "Tue, 14 Feb 2017 22:38:46 GMT",
