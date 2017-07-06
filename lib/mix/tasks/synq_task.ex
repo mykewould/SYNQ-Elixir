@@ -56,7 +56,7 @@ defmodule Mix.Tasks.SynqTask do
     end
   end
 
-  def process(%{command: cmd, video_id: vid} = opts) when cmd in ["details", "detail"] do
+  def process(%{command: cmd, video_id: vid} = _opts) when cmd in ["details", "detail"] do
     resp = Api.details(vid)
     case Api.handle_resp(resp, "getting video details") do
       {:error, msg} -> log(msg)
@@ -64,7 +64,7 @@ defmodule Mix.Tasks.SynqTask do
     end
   end
 
-  def process(%{command: "upload", file: file, video_id: vid} = opts) do
+  def process(%{command: "upload", file: file, video_id: vid} = _opts) do
     unless File.exists?(file) do
       log("File '#{file}' does not exist")
       exit(1)
@@ -78,7 +78,7 @@ defmodule Mix.Tasks.SynqTask do
     end
   end
 
-  def process(%{command: "create", file: file} = opts) do
+  def process(%{command: "create", file: file} = _opts) do
     log("creating video with file #{file}")
   end
 end

@@ -1,7 +1,6 @@
 defmodule SynqElixirParserTest do
   use ExUnit.Case
   alias SynqElixir.Parser
-  import SynqElixir.TestHelpers
   doctest SynqElixir
 
   @doc """

@@ -9,8 +9,8 @@ defmodule SynqElixir.Mixfile do
      description: "A simple synq.fm api implementation",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     deps: deps,
-     package: package,
+     deps: deps(),
+     package: package(),
      test_coverage: [tool: ExCoveralls],
      preferred_cli_env: ["coveralls": :test, "coveralls.detail": :test, "coveralls.post": :test, "coveralls.html": :test, "coveralls.semaphore": :test],
      docs: [logo: "logo/synq_logo.png",
@@ -39,7 +39,7 @@ defmodule SynqElixir.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:httpoison, "~> 0.8.0"},
+      {:httpoison, "~> 0.11.0"},
       {:poison, "~> 1.5.2"},
       {:excoveralls, "~> 0.5.4", only: :test},
       {:earmark, "~> 0.1", only: :dev},

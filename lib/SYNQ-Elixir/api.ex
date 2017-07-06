@@ -9,7 +9,6 @@ defmodule SynqElixir.Api do
   alias __MODULE__
 
   @user_agent [{"User-agent", "SynqElixir"}]
-  @content_type [{"Content-Type", "application/x-www-form-urlencoded"}]
 
   @doc """
   Convenience call that will get the env variable, convert the map to a body
@@ -20,7 +19,7 @@ defmodule SynqElixir.Api do
     form_list = data_map |> Map.to_list
     body = {:multipart, form_list ++ [{:file, file}]}
     url
-      |> Api.post(body, request_headers)
+      |> Api.post(body, request_headers())
       |> Parser.parse(nil)
   end
 
@@ -31,7 +30,7 @@ defmodule SynqElixir.Api do
     mod = if action == :upload, do: nil, else: Video
     action
       |> build_url
-      |> Api.post({:form, form_list}, request_headers)
+      |> Api.post({:form, form_list}, request_headers())
       |> Parser.parse(mod)
   end
 
@@ -39,14 +38,14 @@ defmodule SynqElixir.Api do
   Create a video
   """
   @spec create(map) :: tuple
-  def create(file) when is_bitstring(file), do: create(file, %{})
-
-  @spec create(map) :: tuple
   def create(file, metadata) when is_bitstring(file) and is_map(metadata) do
     {:ok, video} = create(metadata)
     {:ok, resp} = upload(video.video_id, file)
     {:ok, {video, resp}}
   end
+
+  @spec create(map) :: tuple
+  def create(file) when is_bitstring(file), do: create(file, %{})
 
   @spec create(map) :: SynqElixir.Resources.Video
   def create(metadata) when map_size(metadata) > 0 do
@@ -101,13 +100,15 @@ defmodule SynqElixir.Api do
   def handle_resp(resp), do: handle_resp(resp, "")
   def handle_resp(resp, label) do
     case resp do
-      {:error, %{"name" => "missing_parameter", "message" => msg, "details" => %{"missing" => key}} = details, status} ->
+      {:error, %{"name"   => "missing_parameter",
+                "message" => _msg,
+                "details" => %{"missing" => key}} = _details, status} ->
         {:error, "error #{label} : #{status}, missing param '#{key}'"}
       {:error, %{"name" => "missing_parameter"} = details, status} ->
         {:error, "error #{label} : #{status}, #{inspect details}"}
-      {:error, %{"message" => msg}, status} ->
+      {:error, %{"message" => msg}, _status} ->
         {:error, msg}
-      {:ok, video} -> resp
+      {:ok, _video} -> resp
     end
   end
 
@@ -116,7 +117,7 @@ defmodule SynqElixir.Api do
   """
   @spec build_url(bitstring) :: String.t
   def build_url(action) do
-    url <> "/v1/video/#{action}"
+    url() <> "/v1/video/#{action}"
   end
 
   def url, do: url(System.get_env("SYNQ_ENV") || :prod)
